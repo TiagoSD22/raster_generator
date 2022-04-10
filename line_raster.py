@@ -52,6 +52,11 @@ class LineRaster:
         w = abs(self.line_points[-1][0] - self.line_points[0][0]) + 1
         h = abs(self.line_points[-1][1] - self.line_points[0][1]) + 1
 
+        if h == 1:
+            h += 1
+        if w == 1:
+            w += 1
+
         matrix = np.zeros((w, h))
         for point in self.line_points:
             matrix[point[0]][point[1]] = 255
