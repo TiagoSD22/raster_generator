@@ -153,10 +153,32 @@ class Application:
                 raster = self.polygon_raster.raster_equilateral_triangle(length)
 
             elif self.current_polygon == 'Square':
-                pass
+                raster = self.polygon_raster.raster_square(length)
 
             else:
                 pass
+
+            self.fig_subplot.set_xticks(
+                np.arange(-0.5, length, 1),
+                minor=True,
+            )
+            self.fig_subplot.set_yticks(
+                np.arange(-0.5, length, 1),
+                minor=True,
+            )
+
+            self.fig_subplot.set_xticks(
+                np.arange(0, length + 1, 1)
+            )
+            self.fig_subplot.set_yticks(
+                np.arange(0, length + 1, 1)
+            )
+            self.fig_subplot.set_xticklabels(
+                np.arange(0, length + 1, 1)
+            )
+            self.fig_subplot.set_yticklabels(
+                np.arange(0, length + 1, 1)
+            )
 
             self.draw_data = self.fig_subplot.imshow(
                 raster.T, origin="lower", aspect="equal", interpolation=None, cmap="gray"
