@@ -1,11 +1,12 @@
-import tkinter
+import pathlib
+
 import matplotlib as plt
+import numpy as np
+import pygubu
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+
 from line_raster import LineRaster
-import pygubu
-import pathlib
-import numpy as np
 
 plt.use("TkAgg")
 
@@ -23,6 +24,7 @@ class Application:
         self.y2 = None
         self.resolution = None
         self.draw_data = None
+        self.mode = 'LINE'
         self.line_raster = LineRaster()
 
         self.builder = builder = pygubu.Builder()
@@ -38,6 +40,12 @@ class Application:
 
         self.resolution_combobox.current(0)
 
+        self.mode_combobox = builder.get_object("mode_combobox", master)
+
+        self.mode_combobox.current(0)
+
+        self.mode_combobox.bind('<<ComboboxSelected>>', self.mode_combobox_handler)
+
         self.fig = Figure(figsize=(10, 10))
         self.fig_subplot = self.fig.add_subplot(111)
 
@@ -51,6 +59,13 @@ class Application:
         self.main_window.mainloop()
 
     def draw_raster(self):
+        if self.mode == 'LINE':
+            self.draw_line_raster()
+        else:
+            # TODO draw polygon raster
+            pass
+
+    def draw_line_raster(self):
         self.x1 = self.builder.get_object("x1_entry", self.master).get()
         self.y1 = self.builder.get_object("y1_entry", self.master).get()
         self.x2 = self.builder.get_object("x2_entry", self.master).get()
@@ -109,3 +124,6 @@ class Application:
 
         self.canvas.get_tk_widget().pack()
         self.canvas.draw()
+
+    def mode_combobox_handler(self, event):
+        self.mode = self.mode_combobox.get()
