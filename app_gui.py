@@ -1,12 +1,11 @@
 import pathlib
-
 import matplotlib as plt
 import numpy as np
 import pygubu
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-
 from line_raster import LineRaster
+from polygon_raster import PolygonRaster
 
 plt.use("TkAgg")
 
@@ -24,8 +23,10 @@ class Application:
         self.y2 = None
         self.resolution = None
         self.draw_data = None
+        self.current_polygon = None
         self.mode = 'LINE'
         self.line_raster = LineRaster()
+        self.polygon_raster = PolygonRaster()
 
         self.builder = builder = pygubu.Builder()
         builder.add_resource_path(PROJECT_PATH)
@@ -35,6 +36,26 @@ class Application:
         self.main_window = builder.get_object("main_window", master)
 
         builder.connect_callbacks(self)
+
+        self.x1_entry = self.builder.get_object("x1_entry", self.master)
+        self.y1_entry = self.builder.get_object("y1_entry", self.master)
+        self.x2_entry = self.builder.get_object("x2_entry", self.master)
+        self.y2_entry = self.builder.get_object("y2_entry", self.master)
+        self.x1_label = self.builder.get_object("x1_label", self.master)
+        self.y1_label = self.builder.get_object("y1_label", self.master)
+        self.x2_label = self.builder.get_object("x2_label", self.master)
+        self.y2_label = self.builder.get_object("y2_label", self.master)
+
+        self.length_label = self.builder.get_object("length_label", self.master)
+        self.length_entry = self.builder.get_object("length_entry", self.master)
+        self.polygon_label = self.builder.get_object("polygon_label", self.master)
+        self.polygon_combobox = self.builder.get_object("polygon_combobox", self.master)
+
+        self.polygon_combobox["values"] = ["Equilateral Triangle", "Square", "Hexagon"]
+
+        self.polygon_combobox.bind('<<ComboboxSelected>>', self.polygon_combobox_handler)
+
+        self.show_line_mode()
 
         self.resolution_combobox = builder.get_object("resolution_combobox", master)
 
@@ -62,8 +83,7 @@ class Application:
         if self.mode == 'LINE':
             self.draw_line_raster()
         else:
-            # TODO draw polygon raster
-            pass
+            self.draw_polygon_raster()
 
     def draw_line_raster(self):
         self.x1 = self.builder.get_object("x1_entry", self.master).get()
@@ -125,5 +145,52 @@ class Application:
         self.canvas.get_tk_widget().pack()
         self.canvas.draw()
 
+    def draw_polygon_raster(self):
+        length = int(self.length_entry.get())
+
+        if self.current_polygon is not None:
+            if self.current_polygon == 'Equilateral Triangle':
+                raster = self.polygon_raster.raster_equilateral_triangle(length)
+
+            elif self.current_polygon == 'Square':
+                pass
+
+            else:
+                pass
+
+            self.draw_data = self.fig_subplot.imshow(
+                raster.T, origin="lower", aspect="equal", interpolation=None, cmap="gray"
+            )
+
+            self.canvas.get_tk_widget().pack()
+            self.canvas.draw()
+
     def mode_combobox_handler(self, event):
         self.mode = self.mode_combobox.get()
+
+        if self.mode == 'LINE':
+            self.show_line_mode()
+        else:
+            self.show_polygon_mode()
+
+    def polygon_combobox_handler(self, event):
+        self.current_polygon = self.polygon_combobox.get()
+
+    def show_line_mode(self):
+        self.length_entry.grid_remove()
+        self.length_label.grid_remove()
+        self.polygon_combobox.grid_remove()
+        self.polygon_label.grid_remove()
+
+        for e in [self.x1_entry, self.x1_label, self.x2_entry, self.x2_label, self.y1_entry, self.y1_label, self.y2_entry, self.y2_label]:
+            e.grid()
+
+    def show_polygon_mode(self):
+        self.length_entry.grid()
+        self.length_label.grid()
+        self.polygon_combobox.grid()
+        self.polygon_label.grid()
+
+        for e in [self.x1_entry, self.x1_label, self.x2_entry, self.x2_label, self.y1_entry, self.y1_label,
+                  self.y2_entry, self.y2_label]:
+            e.grid_remove()
