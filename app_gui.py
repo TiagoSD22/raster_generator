@@ -156,7 +156,8 @@ class Application:
                 raster = self.polygon_raster.raster_square(length)
 
             else:
-                pass
+                raster = self.polygon_raster.raster_hexagon(length)
+                length *= 2
 
             self.fig_subplot.set_xticks(
                 np.arange(-0.5, length, 1),
