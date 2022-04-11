@@ -1,8 +1,8 @@
-import app_gui
+import gui
 
 
 def main():
-    app = app_gui.Application()
+    app = gui.Application()
     app.run()
 
 

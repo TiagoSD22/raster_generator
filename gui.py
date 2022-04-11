@@ -1,4 +1,6 @@
 import pathlib
+import tkinter
+
 import matplotlib as plt
 import numpy as np
 import pygubu
@@ -37,6 +39,8 @@ class Application:
 
         builder.connect_callbacks(self)
 
+        self.draw_button = self.builder.get_object("draw_button", self.master)
+
         self.x1_entry = self.builder.get_object("x1_entry", self.master)
         self.y1_entry = self.builder.get_object("y1_entry", self.master)
         self.x2_entry = self.builder.get_object("x2_entry", self.master)
@@ -70,7 +74,7 @@ class Application:
         self.fig = Figure(figsize=(10, 10))
         self.fig_subplot = self.fig.add_subplot(111)
 
-        self.fig_subplot.grid(which="minor", color="r", linestyle="-", linewidth=2)
+        self.fig_subplot.grid(which="minor", color="gray", linestyle="-", linewidth=2)
 
         self.canvas = self.builder.get_object("canvas", self.master)
 
@@ -205,7 +209,8 @@ class Application:
         self.polygon_combobox.grid_remove()
         self.polygon_label.grid_remove()
 
-        for e in [self.x1_entry, self.x1_label, self.x2_entry, self.x2_label, self.y1_entry, self.y1_label, self.y2_entry, self.y2_label]:
+        for e in [self.x1_entry, self.x1_label, self.x2_entry, self.x2_label, self.y1_entry, self.y1_label,
+                  self.y2_entry, self.y2_label]:
             e.grid()
 
     def show_polygon_mode(self):
