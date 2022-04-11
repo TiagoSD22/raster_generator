@@ -1,4 +1,4 @@
-# Line raster
+# Raster Generator
 An application to draw rasters for lines and polygons
 
 ---
