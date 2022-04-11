@@ -41,7 +41,7 @@ $ python application.py
 ### Screenshots
 
 <h1 align="center">
-  <img alt="Line" title="#Line" src="./screenshots/1.png" />
+  <img alt="Line" title="#Line" src="./screenshots/1.PNG" />
 </h1>
 
 <h1 align="center">
