@@ -45,21 +45,21 @@ $ python application.py
 </h1>
 
 <h1 align="center">
-  <img alt="Line with resolution" title="#LineResolution" src="./screenshots/2.png" />
+  <img alt="Line with resolution" title="#LineResolution" src="./screenshots/2.PNG" />
 </h1>
 
 <h1 align="center">
-  <img alt="Equilateral Triangle" title="#EquilateralTriangle" src="./screenshots/3.png" />
+  <img alt="Equilateral Triangle" title="#EquilateralTriangle" src="./screenshots/3.PNG" />
 </h1>
 
 <h1 align="center">
-  <img alt="Equilateral Triangle with resolution" title="#EquilateralTriangleResolution" src="./screenshots/4.png" />
+  <img alt="Equilateral Triangle with resolution" title="#EquilateralTriangleResolution" src="./screenshots/4.PNG" />
 </h1>
 
 <h1 align="center">
-  <img alt="Hexagon" title="#Hexagon" src="./screenshots/5.png" />
+  <img alt="Hexagon" title="#Hexagon" src="./screenshots/5.PNG" />
 </h1>
 
 <h1 align="center">
-  <img alt="Square" title="#Square" src="./screenshots/6.png" />
+  <img alt="Square" title="#Square" src="./screenshots/6.PNG" />
 </h1>
