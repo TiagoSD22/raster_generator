@@ -76,6 +76,8 @@ class Application:
         self.fig = Figure(figsize=(10, 10))
         self.fig_subplot = self.fig.add_subplot(111)
 
+        self.fig.set_facecolor("grey")
+
         self.fig_subplot.grid(which="minor", color="gray", linestyle="-", linewidth=2)
 
         self.canvas = self.builder.get_object("canvas", self.master)
@@ -169,6 +171,12 @@ class Application:
     def draw_polygon_raster(self):
         length = int(self.length_entry.get())
 
+        if self.resolution != 'AUTO':
+            resolution = int(self.resolution.split('x')[0])
+            length = resolution * length
+
+            self.fig_subplot.axis('off')
+
         if self.current_polygon is not None:
             if self.current_polygon == "Equilateral Triangle":
                 raster = self.polygon_raster.raster_equilateral_triangle(length)
@@ -180,19 +188,22 @@ class Application:
                 raster = self.polygon_raster.raster_hexagon(length)
                 length *= 2
 
-            self.fig_subplot.set_xticks(
-                np.arange(-0.5, length, 1),
-                minor=True,
-            )
-            self.fig_subplot.set_yticks(
-                np.arange(-0.5, length, 1),
-                minor=True,
-            )
+            if self.resolution == 'AUTO':
+                self.fig_subplot.axis('on')
 
-            self.fig_subplot.set_xticks(np.arange(0, length + 1, 1))
-            self.fig_subplot.set_yticks(np.arange(0, length + 1, 1))
-            self.fig_subplot.set_xticklabels(np.arange(0, length + 1, 1))
-            self.fig_subplot.set_yticklabels(np.arange(0, length + 1, 1))
+                self.fig_subplot.set_xticks(
+                    np.arange(-0.5, length, 1),
+                    minor=True,
+                )
+                self.fig_subplot.set_yticks(
+                    np.arange(-0.5, length, 1),
+                    minor=True,
+                )
+
+                self.fig_subplot.set_xticks(np.arange(0, length + 1, 1))
+                self.fig_subplot.set_yticks(np.arange(0, length + 1, 1))
+                self.fig_subplot.set_xticklabels(np.arange(0, length + 1, 1))
+                self.fig_subplot.set_yticklabels(np.arange(0, length + 1, 1))
 
             self.draw_data = self.fig_subplot.imshow(
                 raster.T,
