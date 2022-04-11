@@ -21,7 +21,7 @@ class Application:
         self.y1 = None
         self.x2 = None
         self.y2 = None
-        self.resolution = None
+        self.resolution = 'AUTO'
         self.draw_data = None
         self.current_polygon = None
         self.mode = "LINE"
@@ -65,6 +65,8 @@ class Application:
 
         self.resolution_combobox.current(0)
 
+        self.resolution_combobox.bind("<<ComboboxSelected>>", self.resolution_combobox_handler)
+
         self.mode_combobox = builder.get_object("mode_combobox", master)
 
         self.mode_combobox.current(0)
@@ -90,57 +92,72 @@ class Application:
             self.draw_polygon_raster()
 
     def draw_line_raster(self):
-        self.x1 = self.builder.get_object("x1_entry", self.master).get()
-        self.y1 = self.builder.get_object("y1_entry", self.master).get()
-        self.x2 = self.builder.get_object("x2_entry", self.master).get()
-        self.y2 = self.builder.get_object("y2_entry", self.master).get()
+        self.x1 = int(self.builder.get_object("x1_entry", self.master).get())
+        self.y1 = int(self.builder.get_object("y1_entry", self.master).get())
+        self.x2 = int(self.builder.get_object("x2_entry", self.master).get())
+        self.y2 = int(self.builder.get_object("y2_entry", self.master).get())
 
-        self.line_raster.x1 = int(self.x1)
-        self.line_raster.y1 = int(self.y1)
-        self.line_raster.x2 = int(self.x2)
-        self.line_raster.y2 = int(self.y2)
+        if self.resolution != 'AUTO':
+            resolution = int(self.resolution.split('x')[0])
+
+            old_width = abs(self.x2 - self.x1)
+            old_height = abs(self.y2 - self.y1)
+
+            self.x1 *= resolution//old_width
+            self.x2 *= resolution // old_width
+            self.y1 *= resolution // old_height
+            self.y2 *= resolution // old_height
+
+            self.fig_subplot.axis('off')
+
+        self.line_raster.x1 = self.x1
+        self.line_raster.y1 = self.y1
+        self.line_raster.x2 = self.x2
+        self.line_raster.y2 = self.y2
 
         raster = self.line_raster.draw_raster()
 
-        self.fig_subplot.set_xticks(
-            np.arange(-0.5, abs(self.line_raster.x2 - self.line_raster.x1), 1),
-            minor=True,
-        )
-        self.fig_subplot.set_yticks(
-            np.arange(-0.5, abs(self.line_raster.y2 - self.line_raster.y1), 1),
-            minor=True,
-        )
+        if self.resolution == 'AUTO':
+            self.fig_subplot.axis('on')
+            self.fig_subplot.set_xticks(
+                np.arange(-0.5, abs(self.line_raster.x2 - self.line_raster.x1), 1),
+                minor=True,
+            )
+            self.fig_subplot.set_yticks(
+                np.arange(-0.5, abs(self.line_raster.y2 - self.line_raster.y1), 1),
+                minor=True,
+            )
 
-        xticks_values = [
-            self.line_raster.repositioned_line[0][0],
-            self.line_raster.repositioned_line[-1][0],
-        ]
-        xticks_values.sort()
+            xticks_values = [
+                self.line_raster.repositioned_line[0][0],
+                self.line_raster.repositioned_line[-1][0],
+            ]
+            xticks_values.sort()
 
-        yticks_values = [
-            self.line_raster.repositioned_line[0][1],
-            self.line_raster.repositioned_line[-1][1],
-        ]
-        yticks_values.sort()
+            yticks_values = [
+                self.line_raster.repositioned_line[0][1],
+                self.line_raster.repositioned_line[-1][1],
+            ]
+            yticks_values.sort()
 
-        xlabels_values = [self.line_raster.x1, self.line_raster.x2]
-        xlabels_values.sort()
+            xlabels_values = [self.line_raster.x1, self.line_raster.x2]
+            xlabels_values.sort()
 
-        ylabels_values = [self.line_raster.y1, self.line_raster.y2]
-        ylabels_values.sort()
+            ylabels_values = [self.line_raster.y1, self.line_raster.y2]
+            ylabels_values.sort()
 
-        self.fig_subplot.set_xticks(
-            np.arange(xticks_values[0], xticks_values[1] + 1, 1)
-        )
-        self.fig_subplot.set_yticks(
-            np.arange(yticks_values[0], yticks_values[1] + 1, 1)
-        )
-        self.fig_subplot.set_xticklabels(
-            np.arange(xlabels_values[0], xlabels_values[1] + 1, 1)
-        )
-        self.fig_subplot.set_yticklabels(
-            np.arange(ylabels_values[0], ylabels_values[1] + 1, 1)
-        )
+            self.fig_subplot.set_xticks(
+                np.arange(xticks_values[0], xticks_values[1] + 1, 1)
+            )
+            self.fig_subplot.set_yticks(
+                np.arange(yticks_values[0], yticks_values[1] + 1, 1)
+            )
+            self.fig_subplot.set_xticklabels(
+                np.arange(xlabels_values[0], xlabels_values[1] + 1, 1)
+            )
+            self.fig_subplot.set_yticklabels(
+                np.arange(ylabels_values[0], ylabels_values[1] + 1, 1)
+            )
 
         self.draw_data = self.fig_subplot.imshow(
             raster.T, origin="lower", aspect="equal", interpolation=None, cmap="gray"
@@ -187,6 +204,9 @@ class Application:
 
             self.canvas.get_tk_widget().pack()
             self.canvas.draw()
+
+    def resolution_combobox_handler(self, event):
+        self.resolution = self.resolution_combobox.get()
 
     def mode_combobox_handler(self, event):
         self.mode = self.mode_combobox.get()
