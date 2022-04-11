@@ -1,6 +1,4 @@
 import pathlib
-import tkinter
-
 import matplotlib as plt
 import numpy as np
 import pygubu
@@ -26,7 +24,7 @@ class Application:
         self.resolution = None
         self.draw_data = None
         self.current_polygon = None
-        self.mode = 'LINE'
+        self.mode = "LINE"
         self.line_raster = LineRaster()
         self.polygon_raster = PolygonRaster()
 
@@ -57,7 +55,9 @@ class Application:
 
         self.polygon_combobox["values"] = ["Equilateral Triangle", "Square", "Hexagon"]
 
-        self.polygon_combobox.bind('<<ComboboxSelected>>', self.polygon_combobox_handler)
+        self.polygon_combobox.bind(
+            "<<ComboboxSelected>>", self.polygon_combobox_handler
+        )
 
         self.show_line_mode()
 
@@ -69,7 +69,7 @@ class Application:
 
         self.mode_combobox.current(0)
 
-        self.mode_combobox.bind('<<ComboboxSelected>>', self.mode_combobox_handler)
+        self.mode_combobox.bind("<<ComboboxSelected>>", self.mode_combobox_handler)
 
         self.fig = Figure(figsize=(10, 10))
         self.fig_subplot = self.fig.add_subplot(111)
@@ -84,7 +84,7 @@ class Application:
         self.main_window.mainloop()
 
     def draw_raster(self):
-        if self.mode == 'LINE':
+        if self.mode == "LINE":
             self.draw_line_raster()
         else:
             self.draw_polygon_raster()
@@ -153,10 +153,10 @@ class Application:
         length = int(self.length_entry.get())
 
         if self.current_polygon is not None:
-            if self.current_polygon == 'Equilateral Triangle':
+            if self.current_polygon == "Equilateral Triangle":
                 raster = self.polygon_raster.raster_equilateral_triangle(length)
 
-            elif self.current_polygon == 'Square':
+            elif self.current_polygon == "Square":
                 raster = self.polygon_raster.raster_square(length)
 
             else:
@@ -172,21 +172,17 @@ class Application:
                 minor=True,
             )
 
-            self.fig_subplot.set_xticks(
-                np.arange(0, length + 1, 1)
-            )
-            self.fig_subplot.set_yticks(
-                np.arange(0, length + 1, 1)
-            )
-            self.fig_subplot.set_xticklabels(
-                np.arange(0, length + 1, 1)
-            )
-            self.fig_subplot.set_yticklabels(
-                np.arange(0, length + 1, 1)
-            )
+            self.fig_subplot.set_xticks(np.arange(0, length + 1, 1))
+            self.fig_subplot.set_yticks(np.arange(0, length + 1, 1))
+            self.fig_subplot.set_xticklabels(np.arange(0, length + 1, 1))
+            self.fig_subplot.set_yticklabels(np.arange(0, length + 1, 1))
 
             self.draw_data = self.fig_subplot.imshow(
-                raster.T, origin="lower", aspect="equal", interpolation=None, cmap="gray"
+                raster.T,
+                origin="lower",
+                aspect="equal",
+                interpolation=None,
+                cmap="gray",
             )
 
             self.canvas.get_tk_widget().pack()
@@ -195,7 +191,7 @@ class Application:
     def mode_combobox_handler(self, event):
         self.mode = self.mode_combobox.get()
 
-        if self.mode == 'LINE':
+        if self.mode == "LINE":
             self.show_line_mode()
         else:
             self.show_polygon_mode()
@@ -209,8 +205,16 @@ class Application:
         self.polygon_combobox.grid_remove()
         self.polygon_label.grid_remove()
 
-        for e in [self.x1_entry, self.x1_label, self.x2_entry, self.x2_label, self.y1_entry, self.y1_label,
-                  self.y2_entry, self.y2_label]:
+        for e in [
+            self.x1_entry,
+            self.x1_label,
+            self.x2_entry,
+            self.x2_label,
+            self.y1_entry,
+            self.y1_label,
+            self.y2_entry,
+            self.y2_label,
+        ]:
             e.grid()
 
     def show_polygon_mode(self):
@@ -219,6 +223,14 @@ class Application:
         self.polygon_combobox.grid()
         self.polygon_label.grid()
 
-        for e in [self.x1_entry, self.x1_label, self.x2_entry, self.x2_label, self.y1_entry, self.y1_label,
-                  self.y2_entry, self.y2_label]:
+        for e in [
+            self.x1_entry,
+            self.x1_label,
+            self.x2_entry,
+            self.x2_label,
+            self.y1_entry,
+            self.y1_label,
+            self.y2_entry,
+            self.y2_label,
+        ]:
             e.grid_remove()

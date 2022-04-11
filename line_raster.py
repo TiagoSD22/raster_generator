@@ -15,11 +15,11 @@ class LineRaster:
     def draw_raster(self):
         self.line_points = list(bresenham(self.x1, self.y1, self.x2, self.y2))
 
-        print('Raster line points: ', self.line_points)
+        print("Raster line points: ", self.line_points)
 
         self.repositioned_line = self.__reposition_line()
 
-        print('Raster repositioned line points: ', self.repositioned_line)
+        print("Raster repositioned line points: ", self.repositioned_line)
 
         self.line_points = self.repositioned_line
 
@@ -27,14 +27,15 @@ class LineRaster:
 
         return data
 
-    def __reposition_line(
-            self
-    ) -> List[Tuple[float, float]]:
+    def __reposition_line(self) -> List[Tuple[float, float]]:
         minimum_x = min(list(zip(*self.line_points))[0])
         minimum_y = min(list(zip(*self.line_points))[1])
 
         repositioned_line: List[Tuple[float, float]] = list(
-            map(lambda point: (point[0] - minimum_x, point[1] - minimum_y), self.line_points)
+            map(
+                lambda point: (point[0] - minimum_x, point[1] - minimum_y),
+                self.line_points,
+            )
         )
 
         return repositioned_line
@@ -46,7 +47,9 @@ class LineRaster:
         new_y = int(2 * new_h / h * self.line_points[-1][1])
         new_x = int(2 * new_w / w * self.line_points[-1][0])
 
-        return list(bresenham(self.line_points[0][0], self.line_points[0][1], new_x, new_y))
+        return list(
+            bresenham(self.line_points[0][0], self.line_points[0][1], new_x, new_y)
+        )
 
     def __draw_raster_line_image(self):
         w = abs(self.line_points[-1][0] - self.line_points[0][0]) + 1

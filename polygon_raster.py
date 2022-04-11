@@ -63,10 +63,10 @@ class PolygonRaster:
     def raster_hexagon(self, length):
         v1 = (length // 2, 0)
         v2 = (v1[0] + length, 0)
-        v3 = (v2[0] + length // 2, v2[1] + int(length * math.sqrt(3)/2))
-        v4 = (v3[0] - length // 2, v3[1] + int(length * math.sqrt(3)/2))
+        v3 = (v2[0] + length // 2, v2[1] + int(length * math.sqrt(3) / 2))
+        v4 = (v3[0] - length // 2, v3[1] + int(length * math.sqrt(3) / 2))
         v5 = (v4[0] - length, v4[1])
-        v6 = (v5[0] - length // 2, v5[1] - int(length * math.sqrt(3)/2))
+        v6 = (v5[0] - length // 2, v5[1] - int(length * math.sqrt(3) / 2))
 
         polygon_vertex_list = [v1, v2, v3, v4, v5, v6]
 
@@ -83,8 +83,8 @@ class PolygonRaster:
 
         print("Hexagon raster edge list: ", polygon_lines)
 
-        w = 2*length + 1
-        h = int(math.sqrt(3)*length) + 1
+        w = 2 * length + 1
+        h = int(math.sqrt(3) * length) + 1
 
         matrix = np.zeros((w, h))
         for edge in polygon_lines:

@@ -14,12 +14,12 @@ def bresenham(x0, y0, x1, y1):
         dx, dy = dy, dx
         xx, xy, yx, yy = 0, ysign, xsign, 0
 
-    D = 2*dy - dx
+    D = 2 * dy - dx
     y = 0
 
     for x in range(dx + 1):
-        yield x0 + x*xx + y*yx, y0 + x*xy + y*yy
+        yield x0 + x * xx + y * yx, y0 + x * xy + y * yy
         if D >= 0:
             y += 1
-            D -= 2*dx
-        D += 2*dy
+            D -= 2 * dx
+        D += 2 * dy
