@@ -105,7 +105,10 @@ class Application:
             old_width = abs(self.x2 - self.x1)
             old_height = abs(self.y2 - self.y1)
 
-            self.x1 *= resolution//old_width
+            old_width = 1 if old_width == 0 else old_width
+            old_height = 1 if old_height == 0 else old_height
+
+            self.x1 *= resolution // old_width
             self.x2 *= resolution // old_width
             self.y1 *= resolution // old_height
             self.y2 *= resolution // old_height
