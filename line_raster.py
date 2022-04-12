@@ -28,11 +28,13 @@ class LineRaster:
         return data
 
     def __reposition_line(self) -> List[Tuple[float, float]]:
-        minimum_x = min(list(zip(*self.line_points))[0])
-        minimum_y = min(list(zip(*self.line_points))[1])
+        minimum_x = min(list(zip(*self.line_points))[0])  # obtém o menor valor x entre todos os pontos
+        minimum_y = min(list(zip(*self.line_points))[1])  # obtém o menor valor y entre todos os pontos
 
         repositioned_line: List[Tuple[float, float]] = list(
             map(
+                # cada ponto tem suas coordenadas x,y decrementadas, respectivamente,
+                # do x e y mínimos encontrados anteriormente
                 lambda point: (point[0] - minimum_x, point[1] - minimum_y),
                 self.line_points,
             )
@@ -52,16 +54,20 @@ class LineRaster:
         )
 
     def __draw_raster_line_image(self):
+        # self.line_points contém a lista de pontos retornada pelo algoritmo de Bresenham
         w = abs(self.line_points[-1][0] - self.line_points[0][0]) + 1
         h = abs(self.line_points[-1][1] - self.line_points[0][1]) + 1
 
-        if h == 1:
+        if h == 1:  # caso excepcional para semi-retas paralelas ao eixo x
             h += 1
-        if w == 1:
+        if w == 1:  # caso excepcional para semi-retas paralelas ao eixo y
             w += 1
 
-        matrix = np.zeros((w, h))
+        matrix = np.zeros((w, h))  # matriz inicializada com todos as células = 0 (pixels pretos)
         for point in self.line_points:
+            # coordenada presente na lista de Bresenham,
+            # logo a célula será interceptada pela semi-reta e deve ter seu valor = 1 (pixel branco)
             matrix[point[0]][point[1]] = 255
 
+        print(np.rot90(matrix))
         return matrix
