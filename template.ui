@@ -120,7 +120,7 @@
             <property name="exportselection">false</property>
             <property name="justify">center</property>
             <property name="state">readonly</property>
-            <property name="values">AUTO 30x30  50x50 100x100</property>
+            <property name="values">AUTO 30x30 50x50 100x100</property>
             <layout manager="grid">
               <property name="column">5</property>
               <property name="columnspan">1</property>
