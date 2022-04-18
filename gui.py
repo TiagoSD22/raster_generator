@@ -12,6 +12,7 @@ plt.use("TkAgg")
 PROJECT_PATH = pathlib.Path(__file__).parent
 PROJECT_UI = PROJECT_PATH / "template.ui"
 
+MAX_CACHE_SIZE = 50
 
 class Application:
     def __init__(self, master=None):
@@ -27,6 +28,7 @@ class Application:
         self.mode = "LINE"
         self.line_raster = LineRaster()
         self.polygon_raster = PolygonRaster()
+        self.cache = {}
 
         self.builder = builder = pygubu.Builder()
         builder.add_resource_path(PROJECT_PATH)
@@ -59,8 +61,6 @@ class Application:
             "<<ComboboxSelected>>", self.polygon_combobox_handler
         )
 
-        self.show_line_mode()
-
         self.resolution_combobox = builder.get_object("resolution_combobox", master)
 
         self.resolution_combobox.current(0)
@@ -83,6 +83,8 @@ class Application:
         self.canvas = self.builder.get_object("canvas", self.master)
 
         self.canvas = FigureCanvasTkAgg(self.fig, self.canvas)
+
+        self.show_line_mode()
 
     def run(self):
         self.main_window.mainloop()
@@ -173,6 +175,7 @@ class Application:
 
     def draw_polygon_raster(self):
         length = int(self.length_entry.get())
+        resolution = self.resolution
 
         if self.resolution != 'AUTO':
             resolution = int(self.resolution.split('x')[0])
@@ -181,15 +184,23 @@ class Application:
             self.fig_subplot.axis('off')
 
         if self.current_polygon is not None:
-            if self.current_polygon == "Equilateral Triangle":
-                raster = self.polygon_raster.raster_equilateral_triangle(length)
+            raster = self.get_from_cache(self.current_polygon, length, resolution)
 
-            elif self.current_polygon == "Square":
-                raster = self.polygon_raster.raster_square(length)
-
+            if raster is None:
+                if self.current_polygon == "Equilateral Triangle":
+                    raster = self.polygon_raster.raster_equilateral_triangle(length)
+                    self.update_cache(self.current_polygon, length, resolution, raster)
+                elif self.current_polygon == "Square":
+                    raster = self.polygon_raster.raster_square(length)
+                    self.update_cache(self.current_polygon, length, resolution, raster)
+                    length *= 2
+                else:
+                    raster = self.polygon_raster.raster_hexagon(length)
+                    self.update_cache(self.current_polygon, length, resolution, raster)
+                    length *= 2
             else:
-                raster = self.polygon_raster.raster_hexagon(length)
-                length *= 2
+                if self.current_polygon != "Equilateral Triangle":
+                    length *= 2
 
             if self.resolution == 'AUTO':
                 self.fig_subplot.axis('on')
@@ -239,6 +250,9 @@ class Application:
         self.polygon_combobox.grid_remove()
         self.polygon_label.grid_remove()
 
+        self.resolution_combobox["values"] = ["AUTO", "30x30", "50x50", "100x100"]
+        self.resolution_combobox.current(0)
+
         for e in [
             self.x1_entry,
             self.x1_label,
@@ -257,6 +271,9 @@ class Application:
         self.polygon_combobox.grid()
         self.polygon_label.grid()
 
+        self.resolution_combobox["values"] = ["AUTO", "10x10", "30x30", "50x50"]
+        self.resolution_combobox.current(0)
+
         for e in [
             self.x1_entry,
             self.x1_label,
@@ -268,3 +285,21 @@ class Application:
             self.y2_label,
         ]:
             e.grid_remove()
+
+    def update_cache(self, polygon, length, resolution, raster):
+        if len(self.cache) == MAX_CACHE_SIZE:
+            self.cache.pop(next(iter(self.cache)))
+
+        key = "{},{},{}".format(polygon, length, resolution)
+        self.cache.update({key: raster})
+
+    def get_from_cache(self, polygon, length, resolution):
+        key = "{},{},{}".format(polygon, length, resolution)
+
+        raster = None
+
+        if key in self.cache.keys():
+            raster = self.cache[key]
+
+        return raster
+
