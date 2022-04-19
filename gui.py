@@ -252,6 +252,7 @@ class Application:
 
         self.resolution_combobox["values"] = ["AUTO", "30x30", "50x50", "100x100"]
         self.resolution_combobox.current(0)
+        self.resolution = self.resolution_combobox.get()
 
         for e in [
             self.x1_entry,
@@ -273,6 +274,7 @@ class Application:
 
         self.resolution_combobox["values"] = ["AUTO", "10x10", "30x30", "50x50"]
         self.resolution_combobox.current(0)
+        self.resolution = self.resolution_combobox.get()
 
         for e in [
             self.x1_entry,
