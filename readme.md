@@ -57,9 +57,10 @@ $ python application.py
 </h1>
 
 <h1 align="center">
-  <img alt="Hexagon" title="#Hexagon" src="./screenshots/5.PNG" />
+  <img alt="Square" title="#Square" src="./screenshots/5.PNG" />
 </h1>
 
 <h1 align="center">
-  <img alt="Square" title="#Square" src="./screenshots/6.PNG" />
+  <img alt="Hexagon" title="#Hexagon" src="./screenshots/6.PNG" />
 </h1>
+
